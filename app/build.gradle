@@ -48,6 +48,8 @@ android {
         exclude 'META-INF/notice.txt'
         exclude 'META-INF/ASL2.0'
         exclude("META-INF/*.kotlin_module")
+        // Exclude the conflicting file causing the issue
+        exclude 'META-INF/sisu/javax.inject.Named'
     }
 
     namespace 'org.boofcv.android'
