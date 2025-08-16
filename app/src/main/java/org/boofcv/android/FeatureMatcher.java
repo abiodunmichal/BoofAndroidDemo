@@ -1,12 +1,13 @@
 import boofcv.abst.feature.associate.AssociateDescription;
-import boofcv.abst.feature.detect.intensity.FastCornerDetector;
 import boofcv.core.image.border.ImageBorder;
 import boofcv.factory.feature.describe.FactoryDescribe;
 import boofcv.struct.image.GrayU8;
-import boofcv.struct.feature.TupleDesc;
 import boofcv.struct.feature.TupleDesc_F64;
-import boofcv.alg.feature.associate.AssociateEuclidean;
 import boofcv.struct.feature.Point2D_F64;
+import boofcv.alg.feature.associate.AssociateEuclidean;
+import boofcv.abst.feature.detect.intensity.FastCornerDetector;
+import boofcv.abst.feature.describe.DescribePoint;
+import boofcv.struct.feature.TupleDesc;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -16,7 +17,7 @@ public class FeatureMatcher {
     // Fast corner detector for feature detection
     private FastCornerDetector detector;
 
-    // Descriptor matcher (e.g., SIFT, BRIEF)
+    // Descriptor matcher (e.g., SIFT-like descriptor for feature matching)
     private AssociateDescription<TupleDesc_F64> descriptorMatcher;
 
     // List to hold previous frame's points and descriptors
@@ -54,8 +55,9 @@ public class FeatureMatcher {
     private List<Point2D_F64> detectFeatures(GrayU8 image) {
         List<Point2D_F64> points = new ArrayList<>();
         detector.process(image);
+        // Assuming getDetectedPoints() gives the detected feature points
         for (int i = 0; i < detector.getDetectedPoints().size(); i++) {
-            points.add(detector.getDetectedPoints().get(i));
+            points.add(new Point2D_F64(detector.getDetectedPoints().get(i).x, detector.getDetectedPoints().get(i).y));
         }
         return points;
     }
@@ -95,7 +97,7 @@ public class FeatureMatcher {
 
             // If the best match is good enough, add it to the list
             if (bestMatchIdx != -1 && bestDistance < 0.5) {  // Threshold for matching
-                MatchedPoint matched = new MatchedPoint(currentPoints.get(i), previousPoints.get(bestMatchIdx));
+                MatchedPoint matched = new MatchedPoint(previousPoints.get(bestMatchIdx), currentPoints.get(i));
                 matchedPoints.add(matched);
             }
         }
@@ -115,12 +117,12 @@ public class FeatureMatcher {
 
     // Matched point class to store pairs of matching points
     public static class MatchedPoint {
-        public final Point2D_F64 currentPoint;
         public final Point2D_F64 previousPoint;
+        public final Point2D_F64 currentPoint;
 
-        public MatchedPoint(Point2D_F64 currentPoint, Point2D_F64 previousPoint) {
-            this.currentPoint = currentPoint;
+        public MatchedPoint(Point2D_F64 previousPoint, Point2D_F64 currentPoint) {
             this.previousPoint = previousPoint;
+            this.currentPoint = currentPoint;
         }
     }
-  }
+            }
