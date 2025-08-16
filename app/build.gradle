@@ -23,7 +23,7 @@ android {
         release {
             minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
-//            signingConfig signingConfigs.release
+            // signingConfig signingConfigs.release
         }
     }
 
@@ -67,7 +67,7 @@ configurations {
 def acraVersion = '5.7.0'
 
 dependencies {
-    ['boofcv-android', 'boofcv-core', 'boofcv-sfm', 'boofcv-geo'].each { String a ->
+    ['boofcv-android', 'boofcv-core'].each { String a ->
         implementation group: 'org.boofcv', name: a, version: '1.1.8'
     }
 
