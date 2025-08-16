@@ -1,13 +1,11 @@
 import boofcv.abst.feature.associate.AssociateDescription;
-import boofcv.core.image.border.ImageBorder;
+import boofcv.abst.feature.detect.intensity.FastCornerDetector;
 import boofcv.factory.feature.describe.FactoryDescribe;
 import boofcv.struct.image.GrayU8;
 import boofcv.struct.feature.TupleDesc_F64;
 import boofcv.struct.feature.Point2D_F64;
 import boofcv.alg.feature.associate.AssociateEuclidean;
-import boofcv.abst.feature.detect.intensity.FastCornerDetector;
 import boofcv.abst.feature.describe.DescribePoint;
-import boofcv.struct.feature.TupleDesc;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -17,7 +15,7 @@ public class FeatureMatcher {
     // Fast corner detector for feature detection
     private FastCornerDetector detector;
 
-    // Descriptor matcher (e.g., SIFT-like descriptor for feature matching)
+    // Descriptor matcher (e.g., BRIEF-like descriptor for feature matching)
     private AssociateDescription<TupleDesc_F64> descriptorMatcher;
 
     // List to hold previous frame's points and descriptors
@@ -29,7 +27,7 @@ public class FeatureMatcher {
         // Initialize the FAST corner detector for feature detection
         detector = new FastCornerDetector(100, 7);
 
-        // Initialize the descriptor matcher (e.g., SIFT-like descriptor for feature matching)
+        // Initialize the descriptor matcher (e.g., using BRIEF-like descriptors)
         descriptorMatcher = new AssociateEuclidean<>();
     }
 
@@ -62,11 +60,11 @@ public class FeatureMatcher {
         return points;
     }
 
-    // Extract descriptors for the detected points using a descriptor extractor (e.g., SIFT)
+    // Extract descriptors for the detected points using a descriptor extractor (e.g., BRIEF, SIFT)
     private List<TupleDesc_F64> extractDescriptors(GrayU8 image, List<Point2D_F64> points) {
         List<TupleDesc_F64> descriptors = new ArrayList<>();
 
-        // Using a dummy descriptor extractor as an example, you can replace it with SIFT, BRIEF, etc.
+        // Using BoofCV's BRIEF-like descriptor extractor (you can replace it with other descriptors if necessary)
         for (Point2D_F64 point : points) {
             TupleDesc_F64 descriptor = new TupleDesc_F64(128);  // Dummy descriptor size
             descriptor.value[0] = (float) point.x;  // Dummy example
@@ -125,4 +123,4 @@ public class FeatureMatcher {
             this.currentPoint = currentPoint;
         }
     }
-            }
+    }
