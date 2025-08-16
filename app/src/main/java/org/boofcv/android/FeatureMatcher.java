@@ -1,11 +1,10 @@
 import boofcv.abst.feature.associate.AssociateDescription;
-import boofcv.abst.feature.detect.intensity.FastCornerDetector;
 import boofcv.factory.feature.describe.FactoryDescribe;
 import boofcv.struct.image.GrayU8;
 import boofcv.struct.feature.TupleDesc_F64;
 import boofcv.struct.feature.Point2D_F64;
 import boofcv.alg.feature.associate.AssociateEuclidean;
-import boofcv.abst.feature.describe.DescribePoint;
+import boofcv.abst.feature.detect.intensity.FastCornerDetector;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -40,9 +39,9 @@ public class FeatureMatcher {
         List<TupleDesc_F64> currentDescriptors = extractDescriptors(currentImage, currentPoints);
 
         // Step 3: Match current descriptors to previous descriptors
-        List<MatchedPoint> matchedPoints = matchDescriptors(currentDescriptors);
+        List<MatchedPoint> matchedPoints = matchDescriptors(currentPoints, currentDescriptors);
 
-        // Step 4: Store current points and descriptors for next frame
+        // Step 4: Store current points and descriptors for the next frame
         previousPoints = currentPoints;
         previousDescriptors = currentDescriptors;
 
@@ -67,8 +66,8 @@ public class FeatureMatcher {
         // Using BoofCV's BRIEF-like descriptor extractor (you can replace it with other descriptors if necessary)
         for (Point2D_F64 point : points) {
             TupleDesc_F64 descriptor = new TupleDesc_F64(128);  // Dummy descriptor size
-            descriptor.value[0] = (float) point.x;  // Dummy example
-            descriptor.value[1] = (float) point.y;  // Dummy example
+            descriptor.data[0] = (float) point.x;  // Dummy example
+            descriptor.data[1] = (float) point.y;  // Dummy example
             descriptors.add(descriptor);
         }
 
@@ -76,7 +75,7 @@ public class FeatureMatcher {
     }
 
     // Match descriptors between current and previous frames
-    private List<MatchedPoint> matchDescriptors(List<TupleDesc_F64> currentDescriptors) {
+    private List<MatchedPoint> matchDescriptors(List<Point2D_F64> currentPoints, List<TupleDesc_F64> currentDescriptors) {
         List<MatchedPoint> matchedPoints = new ArrayList<>();
 
         // Match current descriptors to previous descriptors
@@ -106,8 +105,9 @@ public class FeatureMatcher {
     // Calculate the Euclidean distance between two descriptors
     private double calculateDescriptorDistance(TupleDesc_F64 desc1, TupleDesc_F64 desc2) {
         double sum = 0;
-        for (int i = 0; i < desc1.value.length; i++) {
-            double diff = desc1.value[i] - desc2.value[i];
+        // Correct way to access the descriptor data
+        for (int i = 0; i < desc1.size(); i++) {
+            double diff = desc1.data[i] - desc2.data[i];
             sum += diff * diff;
         }
         return Math.sqrt(sum);
@@ -123,4 +123,4 @@ public class FeatureMatcher {
             this.currentPoint = currentPoint;
         }
     }
-    }
+             }
