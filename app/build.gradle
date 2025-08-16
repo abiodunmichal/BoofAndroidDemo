@@ -17,17 +17,18 @@ android {
             debuggable true
         }
         fast {
-            initWith debug
+            initWith buildTypes.debug
             debuggable false
         }
         release {
             minifyEnabled false
-            proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
+            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+//            signingConfig signingConfigs.release
         }
     }
 
-    lint {
-        abortOnError = false
+    lintOptions {
+        abortOnError false
     }
 
     compileOptions {
@@ -36,21 +37,17 @@ android {
     }
 
     packagingOptions {
-        resources {
-            excludes += [
-                "LICENSE-EPL-1.0.txt",
-                "LICENSE-EDL-1.0.txt",
-                "META-INF/DEPENDENCIES",
-                "META-INF/LICENSE",
-                "META-INF/LICENSE.txt",
-                "META-INF/license.txt",
-                "META-INF/NOTICE",
-                "META-INF/NOTICE.txt",
-                "META-INF/notice.txt",
-                "META-INF/ASL2.0",
-                "META-INF/*.kotlin_module"
-            ]
-        }
+        exclude 'LICENSE-EPL-1.0.txt'
+        exclude 'LICENSE-EDL-1.0.txt'
+        exclude 'META-INF/DEPENDENCIES'
+        exclude 'META-INF/LICENSE'
+        exclude 'META-INF/LICENSE.txt'
+        exclude 'META-INF/license.txt'
+        exclude 'META-INF/NOTICE'
+        exclude 'META-INF/NOTICE.txt'
+        exclude 'META-INF/notice.txt'
+        exclude 'META-INF/ASL2.0'
+        exclude("META-INF/*.kotlin_module")
     }
 
     namespace 'org.boofcv.android'
