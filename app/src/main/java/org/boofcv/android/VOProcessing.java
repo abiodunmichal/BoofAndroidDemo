@@ -3,40 +3,34 @@ package org.boofcv.android;
 import android.graphics.Canvas;
 import android.graphics.Matrix;
 
-import boofcv.abst.sfm.d3.VisualOdometry;
+import boofcv.abst.sfm.VisualOdometry;
 import boofcv.factory.sfm.FactoryVisualOdometry;
 import boofcv.struct.image.GrayF32;
-import boofcv.struct.image.ImageType;
 import georegression.struct.se.Se3_F64;
 
 public class VOProcessing extends DemoProcessingAbstract<GrayF32> {
 
-    VisualOdometry<GrayF32, Se3_F64> vo;
+    VisualOdometry<GrayF32> vo;
 
     public VOProcessing() {
-        super(ImageType.single(GrayF32.class));
-
-        // Create monocular visual odometry
-        vo = FactoryVisualOdometry.monoPnP(null, GrayF32.class);
+        super(GrayF32.class);
     }
 
     @Override
-    public void process(GrayF32 grayImage) {
-        if (vo.process(grayImage)) {
-            Se3_F64 cameraToWorld = vo.getCameraToWorld();
-            System.out.println("Camera Pose: " + cameraToWorld);
-        } else {
-            System.out.println("VO update failed");
+    public void initialize(int width, int height, int sensorOrientation) {
+        // Create a monocular VO algorithm (PnP with depth)
+        vo = FactoryVisualOdometry.monoDepthPnP(null, GrayF32.class);
+    }
+
+    @Override
+    public void process(GrayF32 input) {
+        if (vo != null) {
+            vo.process(input);
         }
     }
 
     @Override
     public void onDraw(Canvas canvas, Matrix imageToView) {
-        // For now, nothing drawn — later we can add trajectory or features
-    }
-
-    @Override
-    public void stop() {
-        // Cleanup if needed
+        // TODO: draw VO results (camera pose, trajectory, etc.)
     }
     }
